@@ -1,0 +1,134 @@
+import networkx as nx
+import sympy as sp
+import pulp
+import numpy as np
+import math
+
+class Ptet:
+    def __init__(self, chirality=1):
+        self.chirality = chirality  # +1 or -1
+        self.channels = {'p': [], 'e': [], 'f': []}  # lists of open/locked sub-elements
+        self.locked = {'p': False, 'e': False, 'f': False}
+
+class Lock:
+    def __init__(self, type_, chirality_class, alignment, c0=1, alpha=1, beta=1, gamma=1):
+        self.type = type_  # 'p', 'e', 'f'
+        self.chirality_class = chirality_class  # 'same' or 'mixed'
+        self.alignment = alignment  # 'matched' or 'mismatched'
+        self.cost = c0 * alpha * beta * gamma
+
+class SRW:
+    def __init__(self):
+        self.ptets = []  # list of Ptet objects
+        self.locks = []  # list of Lock objects
+        self.graph = nx.Graph()  # V: Ptets (indices), E: locks
+
+    def add_ptet(self, ptet):
+        self.ptets.append(ptet)
+        self.graph.add_node(len(self.ptets) - 1)
+
+    def add_lock(self, ptet_i, ptet_j, lock):
+        self.locks.append(lock)
+        self.graph.add_edge(ptet_i, ptet_j, lock=lock)
+
+    def compute_c3(self, scheme):
+        # scheme: dict with c0(t), alpha(chi), beta(align), gamma(t,align)
+        return sum(self._lock_cost(b, scheme) for b in self.locks)
+
+    def _lock_cost(self, lock, scheme):
+        c0 = scheme['c0'][lock.type]
+        alpha = scheme['alpha'][lock.chirality_class]
+        beta = scheme['beta'][lock.alignment]
+        gamma = scheme['gamma'][(lock.type, lock.alignment)]
+        return c0 * alpha * beta * gamma
+
+    def compute_alignment_frustration(self):
+        # Appendix A: Cycle parity for alignment
+        # Minimize frustration via ILP (PuLP)
+        prob = pulp.LpProblem("Frustration_Min", pulp.LpMinimize)
+        mismatches = pulp.LpVariable.dicts("mismatch", self.graph.edges, cat='Binary')
+        prob += pulp.lpSum(mismatches[e] for e in self.graph.edges)  # minimize mismatches
+        # Add constraints for cycles (simplified; full impl would enumerate cycles)
+        for cycle in nx.cycle_basis(self.graph):
+            prob += pulp.lpSum(mismatches[e] for e in zip(cycle, cycle[1:] + [cycle[0]])) % 2 == 0  # even parity
+        prob.solve(pulp.PULP_CBC_CMD(msg=0))
+        frustration = pulp.value(prob.objective)
+        for e in self.graph.edges:
+            align = 'matched' if mismatches[e].value() == 0 else 'mismatched'
+            self.graph.edges[e]['lock'].alignment = align
+        return frustration
+
+def compute_omega(srw, scheme, phi=sp.GoldenRatio):
+    # Identify sectors (simplified: bulk primal, boundary dual)
+    sectors = {'primal': srw.compute_c3(scheme), 'dual': srw.compute_c3(scheme) * 0.5}  # placeholder dual
+    weights = {}
+    for s in sectors:
+        kappa = 1  # scale level, placeholder
+        flaw = srw.compute_alignment_frustration()
+        lambda_ = scheme['lambda']
+        sigma = scheme['sigma'][s]
+        weights[s] = sigma * phi**kappa * sp.exp(-lambda_ * flaw)
+    c_omega = sum(weights[s] * sectors[s] for s in sectors)
+    return c_omega
+
+def delta_c_omega(initial_srw, final_srw, scheme):
+    return compute_omega(final_srw, scheme) - compute_omega(initial_srw, scheme)
+
+def recursive_stabilization(initial1, initial2, n=20):
+    # Appendix B: Fibonacci-like recurrence
+    x = [sp.sympify(initial1), sp.sympify(initial2)]
+    for i in range(2, n):
+        x.append(x[-1] + x[-2])
+    ratios = [x[i]/x[i-1] for i in range(1, n)]
+    phi_approx = ratios[-1]
+    error = abs(phi_approx - sp.GoldenRatio)
+    return ratios, error
+
+# Canonical scheme example
+canonical_scheme = {
+    'c0': {'p': 1, 'e': 2, 'f': 3},
+    'alpha': {'same': 1, 'mixed': 1},  # no distinction
+    'beta': {'matched': 1, 'mismatched': 1.5},
+    'gamma': {('p','matched'):1, ('p','mismatched'):1, ('e','matched'):1, ('e','mismatched'):1, ('f','matched'):1, ('f','mismatched'):1},
+    'sigma': {'primal':1, 'dual':1},
+    'lambda': 1
+}
+
+# Toy example: Hydrogen minimal mapping (Appendix C)
+initial = SRW()  # separated: 2 Ptets, no locks
+initial.add_ptet(Ptet(1))
+initial.add_ptet(Ptet(1))
+
+final = SRW()  # bound
+final.add_ptet(Ptet(1))
+final.add_ptet(Ptet(1))
+lock = Lock('e', 'same', 'matched', c0=2, alpha=1, beta=1, gamma=1)
+final.add_lock(0, 1, lock)
+
+delta = delta_c_omega(initial, final, canonical_scheme)
+kB = 8.617333262145e-5  # eV/K
+T_eff = 13.59844 / (float(delta) * kB * math.log(2))  # calibrate
+
+# Helium toy: 3 Ptets, 2 locks
+helium_initial = SRW()  # assume similar separated
+helium_initial.add_ptet(Ptet(1))
+helium_initial.add_ptet(Ptet(1))
+helium_initial.add_ptet(Ptet(1))
+
+helium_final = SRW()
+helium_final.add_ptet(Ptet(1))
+helium_final.add_ptet(Ptet(1))
+helium_final.add_ptet(Ptet(1))
+lock1 = Lock('e', 'same', 'matched', c0=2, alpha=1, beta=1, gamma=1)
+lock2 = Lock('e', 'same', 'matched', c0=2, alpha=1, beta=1, gamma=1)
+helium_final.add_lock(0, 1, lock1)
+helium_final.add_lock(0, 2, lock2)
+
+delta_he = delta_c_omega(helium_initial, helium_final, canonical_scheme)
+predicted_ev = float(delta_he) * kB * T_eff * math.log(2)
+error = abs(predicted_ev - 24.587) / 24.587 * 100
+print(f"Predicted He: {predicted_ev:.1f} eV, Error: {error:.1f}% (fails if >5%)")
+
+# Example usage: Recursive sim from e and sqrt(2)
+ratios_e, err_e = recursive_stabilization(sp.E, sp.sqrt(2))
+print(f"Error from e, sqrt(2): {err_e}")
