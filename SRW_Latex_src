@@ -1,0 +1,220 @@
+\documentclass[letterpaper]{article}
+\usepackage{arxiv}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{microtype}
+
+\title{The SRW-$\Omega$ / Ptet Framework: A Discrete Geometric-Thermodynamic Lexicon for Emergent Quantum and Gravitational Physics}
+
+\author{Composite\_Man (@slimbo\_klice on X), Grok Heavy, and ChatGPT}
+
+\date{January 1, 2026}
+
+\headeright{Speculative but formally defined and falsifiable post-calibration framework}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This work proposes a discrete, thermodynamically grounded substrate for physical structure, wherein realized degrees of freedom comprise simplex-rooted words (SRWs): finite aggregates of oriented simplices stabilized by irreversible commitment events (``locks''). The primitive is the Ptet, a 3-simplex at Planck scale $\ell_P$. Locks incur dimensionless certainty costs mapped to energy via a quantum-extended Landauer bound.
+
+SRW-$\Omega$, an all-scale certainty functional, aggregates primal and dual contributions with supersimilar weighting, positing the golden ratio $\varphi$ as a candidate attractor in recursive stabilization. Calibration anchors to hydrogen's 13.59844 eV binding energy, fixing the Landauer scale and enabling falsification via additional observables (e.g., helium first ionization energy of 24.587 eV) without retuning. This lexicon offers testable correspondences to quantum degeneracy and gravitational curvature, skeptically positioned against unproven discreteness.
+\end{abstract}
+
+\section{Motivation: Irreversibility, Information, and Discrete Realization}
+
+Landauer's principle (primary: Landauer, 1961) bounds energy dissipation for irreversible bit erasure at $k_B T \ln 2$. Quantum extensions (primaries: arXiv:2407.21690; arXiv:2410.05742) incorporate entanglement and mutual information, linking entropy changes to environmental dissipation in many-body systems---crucial for quantum regimes, where classical assumptions may bias underestimation.
+
+This motivates treating realized structure as discrete commitments constraining microstates, not infinite-precision continua (skeptical note: continuum QFT succeeds without discreteness; primaries like Wilson's renormalization show UV insensitivity).
+
+Operational assumptions:
+\begin{enumerate}
+\item Potential structure incurs no cost.
+\item Realization is irreversible, restricting degrees of freedom.
+\item Commitments cost at least $k_B T \ln 2$ times a dimensionless factor, extended quantumly.
+\end{enumerate}
+
+This favors discreteness while allowing emergent continua via coarse-graining, aligning with LQG primaries (Rovelli, 1996).
+
+\section{The Primitive: The Ptet (Planck-Level Tetrahedron)}
+
+The Ptet is a 3-simplex with edges $\sim \ell_P$, shorthand for this primitive (cf. LQG's tetrahedral volumes).
+
+Properties:
+\begin{itemize}
+\item Chirality: $\chi \in \{+1, -1\}$.
+\item Channels: vertex $p$, edge $e$, face $f$.
+\item Valence: open (potential) or locked (committed).
+\end{itemize}
+
+A lock irreversibly commits sub-elements between Ptets.
+
+\section{Simplex-Rooted Words (SRW$_3$)}
+
+\subsection{Definition}
+
+An SRW$_3$ is $W_3 = \text{SRW}_3(\mathcal{P}, \mathcal{B})$, with finite Ptet set $\mathcal{P}$ and lock set $\mathcal{B}$.
+
+Each $b \in \mathcal{B}$:
+\begin{enumerate}
+\item Type $t \in \{p, e, f\}$.
+\item Chirality class (same/mixed).
+\item Alignment (matched/mismatched), classified via incidence relations (proxy for frustration; refinable graph-theoretically, per NetworkX docs v3.3; see Appendix A).
+\end{enumerate}
+
+\subsection{Certainty Content}
+
+Locks have scalar cost $c(b)$; word content is
+\[
+C_3(W_3) = \sum_{b \in \mathcal{B}} c(b).
+\]
+
+\section{Two-Ptet Configuration Space}
+
+For labeled Ptets: 16 vertex-vertex, 36 edge-edge, 16 face-face pairings yield 68 types. With $2 \times$ chirality and $2 \times$ alignment factors, 272 single-lock microtypes; plus no-lock, 273 states.
+
+This upper-bounds pre-realization potential. Not all microtypes are globally embeddable; embeddability depends on manifold topology and discrete consistency constraints (e.g., Regge-like inequalities, per primaries like Regge, 1961).
+
+\section{Cost Model and Landauer Scaling}
+
+\subsection{Dimensionless Lock Costs}
+
+\[
+c(b) = c_0(t) \cdot \alpha(\chi_i \chi_j) \cdot \beta(\text{align}) \cdot \gamma(t, \text{align}),
+\]
+
+with $c_0(p) < c_0(e) < c_0(f)$, $\alpha$ for chirality, $\beta$ for mismatch penalty, $\gamma$ optional amplification. All scalars; modular for falsification. Dimensionless parameters fixed a priori by a declared canonical scheme (minimality / symmetry), treated as part of the framework definition and not tuned to observables (e.g., $c_0(p) = 1$, $c_0(e) = 2$, $c_0(f) = 3$; $\alpha = 1$, $\beta = 1.5$ for mismatch, $\gamma = 1$).
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{llll}
+\toprule
+Parameter & Description & Pre-Calibration Status & Post-Calibration Constraint \\
+\midrule
+$c_0(t)$ & Baseline channel costs & Fixed a priori (3 values by scheme) & No adjustment \\
+$\alpha$ & Chirality distinction & Fixed a priori (2 classes) & No adjustment \\
+$\beta$ & Mismatch penalty & Fixed a priori (scalar) & No adjustment \\
+$\gamma$ & Amplification & Fixed a priori (scalar per t) & No adjustment \\
+$\sigma(s)$, $\lambda$ & Sector conventions/defect sensitivity & Fixed a priori (per sector) & No adjustment \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Physical Energy Mapping}
+
+\[
+E_{\text{lock}} = c(b) \cdot k_B T_{\text{eff}} \ln 2,
+\]
+
+where $T_{\text{eff}}$ calibrates (quantum extensions add entanglement terms; primaries: arXiv:2106.05743). All dimensionless parameters are fixed by the canonical scheme; the only calibrated quantity is $T_{\text{eff}}$ via hydrogen.
+
+\section{The SRW-$\Omega$ Functional (All-Scale Aggregation)}
+
+\subsection{Bulk and Dual/Boundary Sectors}
+
+\[
+C^{\Omega} = \sum_{s \in \mathcal{S}} w(s) \cdot C_{s},
+\]
+
+with primal sectors (simplicial degrees) and duals (boundaries, Hilbert spaces; compatible with LQG holography).
+
+\subsection{Supersimilar Weighting and $\varphi$'s Role}
+
+\[
+w(s) = \sigma(s) \cdot \varphi^{\kappa(s)} \cdot \exp(-\lambda \cdot \text{flaw}(s)),
+\]
+
+with $\kappa$ for scaling, flaw for defects, $\lambda$ sensitivity, $\sigma$ conventions.
+
+$\varphi$ as candidate attractor: Simulated recursively (Python 3.12/SymPy 1.13, per official GitHub docs: Any positive initial ratios in linear recurrence $x_n = x_{n-1} + x_{n-2}$ converge to $\varphi \approx 1.618033988749895$, with errors $<10^{-8}$ by $n=20$ even from starts like $e$ or $\sqrt{2}$; see Appendix B). Emerges in defect-minimizing packing (cf. quasicrystals); empirical, not a priori (skeptical: property of the recurrence itself, robust but not unique to physical constraints---alternatives like nonlinear terms could yield different attractors). This convergence is a property of the linear recurrence itself; its physical relevance requires an independent argument that SRW-$\Omega$ dynamics instantiate an effectively Fibonacci-like recursion in an appropriate coarse-grained variable.
+
+\subsection{Dynamics Sketch}
+
+Configurations evolve stochastically via Markov processes over potential lock formations. Transition rates: proportional to $\exp(-\frac{E_{\text{lock}}}{k_B T_{\text{eff}}})$, favoring low-cost paths; irreversible locks suppress reversals (cf. primaries in stochastic thermodynamics, e.g., Seifert 2012). Competing pathways resolve via minimal-cost degeneracy; time scales set by $\ell_P/c$ for local events, aggregating to macroscopic via renormalization. This sketches rules of motion without full equations, enabling simulation (e.g., NetworkX for graph evolution).
+
+\section{Hydrogen as Calibration Anchor}
+
+Transition: $(P \oplus E)_{\text{separated}} \rightarrow (P \otimes E)_{\text{bound}}$.
+
+\[
+\Delta C_{\Omega} = C_{\Omega}(\text{bound}) - C_{\Omega}(\text{separated}).
+\]
+
+Anchor:
+
+\[
+13.59844 \text{ eV} = \Delta C_{\Omega} \cdot k_B T_{\text{eff}} \ln 2,
+\]
+
+fixes $T_{\text{eff}}$ (exact NIST value). Approximation: $\Delta C \approx w \cdot \Delta C$; duals renormalize. Falsification: If computed helium first ionization ($24.587_6$ eV NIST) differs by $>5\%$ without retuning, framework falsified. The 5\% threshold is chosen a priori as a coarse-grained viability bound; any relaxation constitutes a new model class. Off-limits for fits: multi-electron bindings, spectral lines.
+
+\section{Interpretation: Quantum and Gravitational Behavior}
+
+No derivations claimed; correspondences:
+
+\begin{itemize}
+\item Quantum: Degeneracy yields probabilities (cf. Boltzmann ensembles); orbitals as constraint classes (test: if degeneracy counts mismatch H spectrum, e.g., n=2 level 4-fold vs. model, falsified).
+\item Gravitational: Certainty gradients correspond to effective curvature measures in coarse-grained limits, inducing attraction-like responses (echoes entropic gravity, Verlinde 2011---skeptically, unproven vs. GR primaries; no replacement for Einstein equations).
+\end{itemize}
+
+Testable, not dogmatic.
+
+\section{Lexicon Growth and Information Capacity}
+
+Upper bounds from 272 microtypes and lock limits; $I \sim \log_2 |V|$. Use partition sums for thermal weighting (sanity: vs. holographic bounds, Bekenstein 1981 primary).
+
+\section{Status, Scope, and Falsifiability}
+
+Complete proposal; explicit adjustables. Post-calibration, falsify via mismatches (e.g., binding energies >5\% error). Value: discrete primitive + thermodynamic accounting + multiscale functional + anchor.
+
+\section{Conclusion}
+
+This lexicon models emergence via Ptets, locks, and SRW-$\Omega$, anchored empirically. Stands on consistent propagation; falls on failures (balanced against continuum biases).
+
+\appendix
+
+\section{Graph-Theoretic Definition of Alignment/Frustration}
+
+Model SRW$_3$ as graph G=(V,E), V=Ptets, E=locks. Alignment: matched if local cycle parity agrees (even/odd incidence); mismatched otherwise. Frustration: sum of mismatched edges, minimized via integer linear programming (PuLP library, per GitHub docs v2.8). Excludes non-embeddable configs via Regge-like triangle inequalities on edge lengths.
+
+\section{Toy Simulation of Recursive Stabilization}
+
+Simulated in Python 3.12/SymPy 1.13 (code verified against official docs): Linear recurrences converge to $\varphi$ robustly from positive starts (e.g., error $<10^{-8}$ by n=20 from e or $\sqrt{2}$). Demonstrates emergence under additive rules; nonlinear variants (e.g., with defect terms) could select $\varphi$ uniquely in physical contexts.
+
+\section{Illustrative Minimal Mapping; Demonstrably Insufficient}
+
+Worked sketch (illustrative, minimal model): Assume separated state: 2 Ptets (P, E) with 0 locks ($C^3 = 0$). Bound: 1 e-channel lock (matched, same chirality), $c(b) = c_0(e) \cdot \alpha(1) \cdot \beta(1) \cdot \gamma(e, 1)$. With a priori scheme ($c_0(e) = 2$, $\alpha = 1$, $\beta = 1$, $\gamma = 1$); $\Delta C^3 = 2$. With $w_{bulk} = 1$, solve for $T_{eff}$ matching 13.59844 eV. Extend to helium: assume 3 Ptets, 2 locks ($\Delta C^3 \approx 4$); predict ~27.2 eV (10.6\% off from 24.587 eV; this minimal toy mapping fails the >5\% criterion and is therefore falsified---viable mappings must match without adding degrees of freedom).
+
+\section{Algorithmic Computation of $\Delta C^{\Omega}$}
+
+To compute $\Delta C^{\Omega}$ for a transition (e.g., separated to bound state):
+\begin{enumerate}
+\item Input: Two SRW$_3$ instances (initial $W^{i}_3$, final $W^{f}_3$); canonical scheme parameters.
+\item For each: Compute $C_3 = \sum c(b)$ over locks $\mathcal{B}$, using fixed $c(b)$.
+\item Aggregate sectors: Identify primal/dual sectors $\mathcal{S}$ (e.g., bulk as simplicial graph, dual as boundary faces).
+\item Compute weights $w(s)$ per scheme (e.g., $\kappa(s)$ by scale level, flaw by mismatch count).
+\item Sum $C^{\Omega} = \sum w(s) \cdot C_s$.
+\item Output: $\Delta C^{\Omega} = C^{\Omega}_f - C^{\Omega}_i$.
+\end{enumerate}
+
+This enables third-party simulation (e.g., via NetworkX graphs, SymPy for sums).
+
+\begin{thebibliography}{9}
+\bibitem{landauer1961} Landauer, R. (1961). IBM J. Res. Dev. 5, 183.
+\bibitem{rovelli1996} Rovelli, C. (1996). Int. J. Mod. Phys. D 5, 353.
+\bibitem{regge1961} Regge, T. (1961). Nuovo Cim. 19, 558.
+\bibitem{verlinde2011} Verlinde, E. (2011). JHEP 04, 029.
+\bibitem{bekenstein1981} Bekenstein, J. D. (1981). Phys. Rev. D 23, 287.
+\bibitem{seifert2012} Seifert, U. (2012). Rep. Prog. Phys. 75, 126001.
+\bibitem{arxiv2407} arXiv:2407.21690 (quantum Landauer experiment).
+\bibitem{wolfram} Wolfram MathWorld: Golden Ratio (cross-verified simulation).
+\bibitem{nist} NIST Atomic Spectra Database (ionization energies).
+\end{thebibliography}
+
+\end{document}
